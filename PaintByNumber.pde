@@ -16,6 +16,10 @@ int paletteRectRadius = 10;
 
 ArrayList<Integer> palette; // requires Integer class, as color is a primitive
 
+// Selection rectangle for selective blurring variables
+int startX, startY, endX, endY;
+boolean dragging = false;
+
 void settings() {
   //img = loadImage("Images/colour wheel.png");
   //img = loadImage("Images/hill.jpg");
@@ -55,6 +59,8 @@ void mouseClicked() {
       palette.add(colourToAdd);
     }
     paletteImg.updatePixels();
+    resultImg = colourImage(img);
+    paintByNumberImg = pbnImage(resultImg);
   }
   // Remove paints with right click
   // If the mouse is on the palette area or on the result image
@@ -65,15 +71,16 @@ void mouseClicked() {
     color colorToRemove = pixels[index];
     palette.remove(Integer.valueOf(colorToRemove)); // Does nothing if colour is not in the palette
     updatePixels();
+    resultImg = colourImage(img);
+    paintByNumberImg = pbnImage(resultImg);
   }
-  resultImg = colourImage(img);
-  paintByNumberImg = pbnImage(resultImg);
+  
 }
 
 void keyPressed() {
   // smooths the image with space
   if (key == ' ') {
-    resultImg = smoothImage(resultImg);
+    resultImg = smoothImage(resultImg, 0, 0, resultImg.width, resultImg.height);
     paintByNumberImg = pbnImage(resultImg);
   } else if (key == 'm'){
     magnify = !magnify;
@@ -88,18 +95,86 @@ void keyPressed() {
     if (blurKernelSize >= min(resultImg.width, resultImg.height)) blurKernelSize = min(resultImg.width, resultImg.height);
     println("BlurKernelSize: ", blurKernelSize);
   }
+}
+
+// Store start pos
+void mousePressed() {
+  if (mouseButton == LEFT) {
+    dragging = false;
+    startX = mouseX;
+    startY = mouseY;
+  }
+  
+}
+// Draw current rectangle
+void mouseDragged() {
+  if (mouseButton == LEFT) {
+    dragging = true;
+    endX = mouseX;
+    endY = mouseY;
+  }
+  
+}
+// If dragged, blur selected rectangle
+void mouseReleased() {
+  if (dragging) {
+    dragging = false;
+    // Coords of rectangle
+    int leftX = min(startX, endX);
+    int topY = min(startY, endY);
+    int rightX = max(startX, endX);
+    int bottomY = max(startY, endY);
+    
+    // Coords of resultImgn with some padding to avoid out of range errors for sure
+    int resultImgLeftX = img.width + 1;
+    int resultImgTopY = 0;
+    int resultImgRightX = img.width + resultImg.width - 1;
+    int resultImgBottomY = img.height - 1;
+    
+    println("reached rectangle on img check");
+    // If none of the rectangle is on the resultImg, break
+    if (leftX >= resultImgRightX || topY >= resultImgBottomY || rightX <= resultImgLeftX || bottomY <= resultImgTopY) return;
+    
+    // Bound the rectangle to inside resultImg
+    leftX = max(leftX, resultImgLeftX);
+    topY = max(topY, resultImgTopY);
+    rightX = min(rightX, resultImgRightX);
+    bottomY = min(bottomY, resultImgBottomY);
+    
+    println("reached rectangle size check");
+    // If the width or height of this bounded rectangle are too small for the blur kernel size, break
+    if (rightX - leftX <= blurKernelSize || bottomY - topY <= blurKernelSize) return;
+    println("succeeded rectangle size check");
+    resultImg = smoothImage(resultImg, leftX, topY, rightX, bottomY);
+    paintByNumberImg = pbnImage(resultImg);
+    println("selective smoothed");
+  }
   
 }
 
+
 void draw() {
   background(0);
-  //image(blurImage(img), 0, 0);
+  //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
   image(img, 0, 0);
   image(resultImg, img.width, 0);
   image(paintByNumberImg, img.width + resultImg.width, 0);
   image(paletteImg, 0, img.height);
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
+  
+  // Draw selection rectangle
+  if (dragging) {
+    fill(255, 255, 255, 50);
+    int leftX = min(startX, endX);
+    int topY = min(startY, endY);
+    int rectWidth = abs(startX - endX);
+    int rectHeight = abs(startY - endY);
+    rect(leftX, topY, rectWidth, rectHeight);
+  
+  }
+  
+  // If magnify, turn on magnification
   if (magnify) {
     magnify();
   }

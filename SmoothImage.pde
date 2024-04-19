@@ -1,8 +1,8 @@
 // Smooth settings
 int blurKernelSize = 5;
 
-PImage smoothImage(PImage inputImg) {
-  PImage outputImage = blurImage(inputImg, 0, 0, inputImg.width, inputImg.height);
+PImage smoothImage(PImage inputImg, int startX, int startY, int endX, int endY) {
+  PImage outputImage = blurImage(inputImg, startX, startY, endX, endY);
   outputImage = colourImage(outputImage);
   return outputImage;
 }
