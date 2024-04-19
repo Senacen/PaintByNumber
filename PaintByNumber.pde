@@ -17,17 +17,17 @@ int paletteRectRadius = 10;
 ArrayList<Integer> palette; // requires Integer class, as color is a primitive
 
 void settings() {
-  //img = loadImage("colour wheel.png");
-  img = loadImage("hill.jpg");
-  //img = loadImage("big hill.jpg");
-  //img = loadImage("face.jpg");
-  //img = loadImage("mayflower.jpg");
+  //img = loadImage("Images/colour wheel.png");
+  img = loadImage("Images/hill.jpg");
+  //img = loadImage("Images/big hill.jpg");
+  //img = loadImage("Images/face.jpg");
+  //img = loadImage("Images/mayflower.jpg");
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
-  //paletteImg = loadImage("colour wheel.png");
-  paletteImg = loadImage("palette.jpg");
-  //paletteImg = loadImage("mayflower.jpg");
+  //paletteImg = loadImage("Images/colour wheel.png");
+  paletteImg = loadImage("Images/palette.jpg");
+  //paletteImg = loadImage("Images/mayflower.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + paintByNumberImg.width, img.height + paletteImg.height);
 }
