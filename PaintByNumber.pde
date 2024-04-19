@@ -24,8 +24,8 @@ void settings() {
   //img = loadImage("Images/colour wheel.png");
   //img = loadImage("Images/hill.jpg");
   //img = loadImage("Images/big hill.jpg");
-  //img = loadImage("Images/face.jpg");
-  img = loadImage("Images/mayflower.jpg");
+  img = loadImage("Images/face.jpg");
+  //img = loadImage("Images/mayflower.jpg");
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
@@ -85,6 +85,9 @@ void keyPressed() {
     paintByNumberImg = pbnImage(resultImg);
   } else if (key == 'm'){
     magnify = !magnify;
+  } else if (key == 's'){
+    saveImages();
+    println("saved");
   } else if (key == CODED) {
     if (keyCode == UP) {
       blurKernelSize += 2;
@@ -131,8 +134,7 @@ void mouseReleased() {
     int resultImgTopY = 0;
     int resultImgRightX = img.width + resultImg.width - 1;
     int resultImgBottomY = img.height - 1;
-    
-    println("reached rectangle on img check");
+
     // If none of the rectangle is on the resultImg, break
     if (leftX >= resultImgRightX || topY >= resultImgBottomY || rightX <= resultImgLeftX || bottomY <= resultImgTopY) return;
     
@@ -141,14 +143,11 @@ void mouseReleased() {
     topY = max(topY, resultImgTopY);
     rightX = min(rightX, resultImgRightX);
     bottomY = min(bottomY, resultImgBottomY);
-    
-    println("reached rectangle size check");
+
     // If the width or height of this bounded rectangle are too small for the blur kernel size, break
     if (rightX - leftX <= blurKernelSize || bottomY - topY <= blurKernelSize) return;
-    println("succeeded rectangle size check");
     resultImg = smoothImage(resultImg, leftX, topY, rightX, bottomY);
     paintByNumberImg = pbnImage(resultImg);
-    println("selective smoothed");
   }
   
 }
