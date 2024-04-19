@@ -49,7 +49,8 @@ void setup() {
 
 void mouseClicked() {
   // Add paints with left click
-  if (mouseButton == LEFT && mouseX < paletteImg.width && mouseY > img.height) {
+  // If the mouse is on the palette image
+  if (mouseButton == LEFT && mouseX < paletteImg.width && mouseY > img.height) { 
     int x = mouseX;
     int y = mouseY - img.height;
     paletteImg.loadPixels();
