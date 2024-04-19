@@ -2,14 +2,14 @@
 int blurKernelSize = 5;
 
 PImage smoothImage(PImage inputImg) {
-  PImage outputImage = blurImage(inputImg);
+  PImage outputImage = blurImage(inputImg, 0, 0, inputImg.width, inputImg.height);
   outputImage = colourImage(outputImage);
   return outputImage;
 }
 
 // Changes inputImg in current implementation
 // Uses sliding window an a combination of two 1D box blurs to create a 2D box blur in lower time complexity
-PImage blurImage(PImage inputImg) {
+PImage blurImage(PImage inputImg, int startX, int startY, int endX, int endY) {
   PImage outputImg = inputImg.copy();
   inputImg.loadPixels(); // To calculate blur on
   outputImg.loadPixels(); // To output blurred pixel to
@@ -19,12 +19,12 @@ PImage blurImage(PImage inputImg) {
   int boundary = (blurKernelSize - 1) / 2;
   
   // Horizontal Pass
-  for (int y = boundary; y < inputImg.height - boundary; y++) {
+  for (int y = startY + boundary; y < endY - boundary; y++) {
     // Initialise the sliding window
     float rSum = 0;
     float gSum = 0;
     float bSum = 0;
-    for (int i = 0; i < blurKernelSize; i++) {
+    for (int i = startX; i < startX + blurKernelSize; i++) {
       int index = y * inputImg.width + i;
       color colour = inputImg.pixels[index];
       float r = red(colour);
@@ -35,7 +35,7 @@ PImage blurImage(PImage inputImg) {
       bSum += b;
     }
     
-    for (int x = boundary + 1; x < inputImg.width - boundary; x++) {
+    for (int x = startX + boundary + 1; x < endX - boundary; x++) {
       
       // Adding new pixel in sliding window
       int rightIndex = y * inputImg.width + (x + boundary);
@@ -66,12 +66,12 @@ PImage blurImage(PImage inputImg) {
   inputImg = outputImg.copy();
   
   // Vertical Pass
-  for (int x = boundary; x < inputImg.width - boundary; x++) {
+  for (int x = startX + boundary; x < endX - boundary; x++) {
     // Initialise the sliding window
     float rSum = 0;
     float gSum = 0;
     float bSum = 0;
-    for (int i = 0; i < blurKernelSize; i++) {
+    for (int i = startY; i < startY + blurKernelSize; i++) {
       int index = i * inputImg.width + x;
       color colour = inputImg.pixels[index];
       float r = red(colour);
@@ -81,7 +81,7 @@ PImage blurImage(PImage inputImg) {
       gSum += g;
       bSum += b;
     }
-    for (int y = boundary + 1; y < inputImg.height - boundary; y++) {
+    for (int y = startY + boundary + 1; y < endY - boundary; y++) {
       
       // Adding new pixel in sliding window
       int downIndex = (y + boundary) * inputImg.width + x;

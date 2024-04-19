@@ -5,7 +5,7 @@ PImage paintByNumberImg;
 PImage paletteImg;
 
 // Image resize dimensions
-int imgResizeWidth = 1000; // only width, as height has to be scaled proportionally
+int imgResizeWidth = 600; // only width, as height has to be scaled proportionally
 int paletteImgResizeWidth = 500;
 int paletteImgResizeHeight = 500;
 
@@ -18,15 +18,17 @@ ArrayList<Integer> palette; // requires Integer class, as color is a primitive
 
 void settings() {
   //img = loadImage("Images/colour wheel.png");
-  img = loadImage("Images/hill.jpg");
+  //img = loadImage("Images/hill.jpg");
   //img = loadImage("Images/big hill.jpg");
   //img = loadImage("Images/face.jpg");
-  //img = loadImage("Images/mayflower.jpg");
+  img = loadImage("Images/mayflower.jpg");
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
   //paletteImg = loadImage("Images/colour wheel.png");
-  paletteImg = loadImage("Images/palette.jpg");
+  //paletteImg = loadImage("Images/palette.jpg");
+  //paletteImg = loadImage("Images/face.jpg");
+  paletteImg = loadImage("Images/PBNifyTestPalette.png");
   //paletteImg = loadImage("Images/mayflower.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + paintByNumberImg.width, img.height + paletteImg.height);
