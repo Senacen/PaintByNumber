@@ -1,6 +1,7 @@
 PImage colourImage(PImage inputImg) {
   PImage outputImg = inputImg.copy();
   outputImg.loadPixels();
+  paintCounts = new ArrayList<Integer>(java.util.Collections.nCopies(palette.size(), 0)); // fill it with 0s
   for (int x = 0; x < outputImg.width; x++) {
     for (int y = 0; y < outputImg.height; y++) {
       int index = y * outputImg.width + x;
@@ -13,6 +14,7 @@ PImage colourImage(PImage inputImg) {
       
       // Find the closest paint in the palette
       color closestColour = color(0,0,0); // Initialise to avoid compiler error
+      int paletteIndex = 0; // used to increment paint count
       float minDistanceSquared = redmeanSquared(0, 255, 0, 255, 0, 255); // Max square distance of redmean possible, diff between white and black
       for (int i = 0; i < palette.size(); i++) {
         color paint = palette.get(i);
@@ -28,11 +30,20 @@ PImage colourImage(PImage inputImg) {
         if (distanceSquared < minDistanceSquared) {
           minDistanceSquared = distanceSquared;
           closestColour = paint;
+          paletteIndex = i;
         }
       }
       
       // Change the pixel to that paint
       outputImg.pixels[index] = closestColour;
+      
+      // Increment that paint's count
+      if (palette.size() > 0) {
+        Integer count = paintCounts.get(paletteIndex);
+        count++;
+        paintCounts.set(paletteIndex, count);
+      }
+      
     }
   }
   outputImg.updatePixels();

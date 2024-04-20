@@ -5,7 +5,7 @@ PImage paintByNumberImg;
 PImage paletteImg;
 
 // Image resize dimensions
-int imgResizeWidth = 600; // only width, as height has to be scaled proportionally
+int imgResizeWidth = 800; // only width, as height has to be scaled proportionally
 int paletteImgResizeWidth = 500;
 int paletteImgResizeHeight = 500;
 
@@ -15,6 +15,7 @@ int paletteRectSpacing = 50;
 int paletteRectRadius = 10;
 
 ArrayList<Integer> palette; // requires Integer class, as color is a primitive
+ArrayList<Integer> paintCounts; // To calculate how much of the picture uses the paint
 
 // Selection rectangle for selective blurring variables
 int startX, startY, endX, endY;
@@ -24,15 +25,19 @@ void settings() {
   //img = loadImage("Images/colour wheel.png");
   //img = loadImage("Images/hill.jpg");
   //img = loadImage("Images/big hill.jpg");
-  img = loadImage("Images/face.jpg");
+  //img = loadImage("Images/face.jpg");
   //img = loadImage("Images/mayflower.jpg");
+  //img = loadImage("Images/holloway.jpg");
+  //img = loadImage("Images/raze.jpg");
+  img = loadImage("Images/artAutumn.jpg");
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
   //paletteImg = loadImage("Images/colour wheel.png");
-  //paletteImg = loadImage("Images/palette.jpg");
+  paletteImg = loadImage("Images/palette.jpg");
+  //paletteImg = loadImage("Images/raze.jpg");
   //paletteImg = loadImage("Images/face.jpg");
-  paletteImg = loadImage("Images/PBNifyTestPalette.png");
+  //paletteImg = loadImage("Images/PBNifyTestPalette.png");
   //paletteImg = loadImage("Images/mayflower.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + paintByNumberImg.width, img.height + paletteImg.height);
@@ -64,8 +69,8 @@ void mouseClicked() {
     paintByNumberImg = pbnImage(resultImg);
   }
   // Remove paints with right click
-  // If the mouse is on the palette area or on the result image
-  if (mouseButton == RIGHT && (mouseX > paletteImg.width && mouseY > img.height 
+  // If the mouse is on the palette image, palette area or on the result image
+  if (mouseButton == RIGHT && (mouseY > img.height 
   || mouseX > img.width && mouseX < img.width + resultImg.width && mouseY < resultImg.height)) { 
     loadPixels();
     int index = mouseY * width + mouseX;
@@ -88,6 +93,9 @@ void keyPressed() {
   } else if (key == 's'){
     saveImages();
     println("saved");
+  } else if (key == 'r'){
+    resultImg = colourImage(img);
+    paintByNumberImg = pbnImage(resultImg);
   } else if (key == CODED) {
     if (keyCode == UP) {
       blurKernelSize += 2;
@@ -97,7 +105,6 @@ void keyPressed() {
     }
     if (blurKernelSize < 3) blurKernelSize = 3;
     if (blurKernelSize >= min(resultImg.width, resultImg.height)) blurKernelSize = min(resultImg.width, resultImg.height);
-    println("BlurKernelSize: ", blurKernelSize);
   }
 }
 
@@ -192,7 +199,7 @@ void drawPalette() {
     int rectWidth = paletteRectWidth;
     int x = paletteImg.width + spacing * (column + 1) + rectWidth * column;
     // If offscreen, start a new row
-    if (x + rectWidth > width) {
+    if (x + rectWidth + spacing> width) {
       row++;
       column = 0;
       // Recalculate for new row
@@ -205,7 +212,12 @@ void drawPalette() {
     textAlign(CENTER, CENTER);
     fill((brightness(paint) > 240) ? 0 : 255); // Set text color to black if paint is light, white if paint is dark. 240 is threshold found by trial and error
     textSize(rectWidth / 2); // Adjust text size to fit inside the rectangle
-    text(i, x + rectWidth / 2, y + rectWidth / 2); // Draw index in the middle
+    text(i + 1, x + rectWidth / 2, y + rectWidth / 2); // Draw index in the middle
+    
+    // Draw the percentage of the painting it makes up
+    fill(255);
+    textSize(rectWidth / 4);
+    text((paintCounts.get(i)  * 100) / (resultImg.width * resultImg.height) + "%", x + rectWidth / 2, y + rectWidth + spacing / 4);
     
     column++;
   }
