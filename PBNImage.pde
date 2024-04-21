@@ -7,11 +7,16 @@ PImage outlineImage(PImage inputImg) {
   PImage outputImg = inputImg.copy();
   inputImg.loadPixels(); // To calculate outline on
   outputImg.loadPixels(); // To output outline to
-  for (int x = 1; x < inputImg.width - 1; x++) {
-    for (int y = 1; y < inputImg.height - 1; y++) {
+  for (int x = 0; x < inputImg.width; x++) {
+    for (int y = 0; y < inputImg.height; y++) {
       boolean outline = false;
       int centreIndex = y * inputImg.width + x;
       color centreColour = inputImg.pixels[centreIndex];
+      
+      // Make borders outlined
+      if (x == 0 || y == 0 || x == inputImg.width || y == inputImg.height) {
+        outline = true;
+      }
       
       // Only outline if top, top left, or left pixel is different to current 
       // If check all neighbours, outlines will be doubled by the pixels on either side of the boundary
