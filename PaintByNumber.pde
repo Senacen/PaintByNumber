@@ -21,6 +21,13 @@ ArrayList<Integer> paintCounts; // To calculate how much of the picture uses the
 int startX, startY, endX, endY;
 boolean dragging = false;
 
+// Colour constants reserved
+color black = color(0, 0, 0); // Outline
+color white = color(255, 255, 255); // Processing
+
+// Label Locations
+ArrayList<int[]> labels;
+
 void settings() {
   //img = loadImage("Images/colour wheel.png");
   //img = loadImage("Images/hill.jpg");
@@ -40,13 +47,13 @@ void settings() {
   //paletteImg = loadImage("Images/PBNifyTestPalette.png");
   //paletteImg = loadImage("Images/mayflower.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
-  size(img.width + resultImg.width + paintByNumberImg.width, img.height + paletteImg.height);
+  size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
 }
 
 void setup() {
   // Startup location
   surface.setLocation(100, 100);
-  palette = new ArrayList<Integer> ();
+  palette = new ArrayList<Integer> (); //<>//
   resultImg = colourImage(img);
   paintByNumberImg = pbnImage(resultImg);
 }
@@ -61,7 +68,8 @@ void mouseClicked() {
     paletteImg.loadPixels();
     int index = y * paletteImg.width + x;
     color colourToAdd = paletteImg.pixels[index];
-    if (!palette.contains(Integer.valueOf(colourToAdd))) {
+    // Check the colour isn't reserved or already in the palette
+    if (colourToAdd != black && colourToAdd != white && !palette.contains(Integer.valueOf(colourToAdd))) {
       palette.add(colourToAdd);
     }
     paletteImg.updatePixels();
@@ -159,7 +167,7 @@ void mouseReleased() {
   
 }
 
-
+PImage testImg;
 void draw() {
   background(0);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
@@ -167,6 +175,7 @@ void draw() {
   image(resultImg, img.width, 0);
   image(paintByNumberImg, img.width + resultImg.width, 0);
   image(paletteImg, 0, img.height);
+  image(testImg, 0, 0);
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
   
@@ -187,6 +196,7 @@ void draw() {
   }
   
 }
+
 
 void drawPalette() {
   // Draw current palette
