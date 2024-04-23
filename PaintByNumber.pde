@@ -1,3 +1,5 @@
+import java.util.*;
+
 // Images
 PImage img;
 PImage resultImg;
@@ -32,11 +34,11 @@ void settings() {
   //img = loadImage("Images/colour wheel.png");
   //img = loadImage("Images/hill.jpg");
   //img = loadImage("Images/big hill.jpg");
-  //img = loadImage("Images/face.jpg");
+  img = loadImage("Images/face.jpg");
   //img = loadImage("Images/mayflower.jpg");
   //img = loadImage("Images/holloway.jpg");
   //img = loadImage("Images/raze.jpg");
-  img = loadImage("Images/artAutumn.jpg");
+  //img = loadImage("Images/artAutumn.jpg");
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
@@ -179,6 +181,13 @@ void draw() {
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
   
+   textAlign(CENTER, CENTER);
+   fill(0);
+   textSize(100);
+  // Draw labels
+  for (int[] label : labels) {
+    text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
+  }
   // Draw selection rectangle
   if (dragging) {
     fill(255, 255, 255, 50);
