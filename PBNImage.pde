@@ -2,7 +2,7 @@
 int regionLabelThreshold = 50;
 
 // Precision for finding optimal pole
-int precision = 10;
+int precision = 1;
 
 PImage pbnImage(PImage inputImg) {
   //println("reached pbni");
@@ -188,7 +188,7 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
   int h = cellSize / 2;
   
   // Degenerate case where cells are too small (caused covering bounding box infinitely)
-  if (h == 0) {
+  if (cellSize == 0) {
     return new PVector(leftX, topY, 0);
   }
   
@@ -276,6 +276,59 @@ class Cell {
 }
 
 float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
+  // If the center of the cell is outside the image, return a distance of -infinity to discard it
+  if (x < 0 || x >= filledOutlineImg.width || y < 0 || y >= filledOutlineImg.height) {
+    return -100000000;
+  }
+
+  // If the pixel is white, it's inside the region
+  boolean inside = (filledOutlineImg.pixels[y * filledOutlineImg.width + x] == white);
+
+  float minDistance = 0;
+
+  // Search for the minimum distance in all directions
+  for (int i = 1; i < max(filledOutlineImg.width, filledOutlineImg.height); i++) {
+    // Check all eight neighboring pixels (diagonals included)
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dy = -1; dy <= 1; dy++) {
+        boolean diagonal = (dx != 0 && dy != 0); // True if currently diagonal direction, false if cardinal
+        if (dx == 0 && dy == 0) continue; // Skip the center pixel
+        //if (diagonal) continue;
+        
+        int nx = x + dx * i;
+        int ny = y + dy * i;
+        
+         if (diagonal) {
+          nx = x + int((dx * i) / sqrt(2));
+          ny = y + int((dy * i) / sqrt(2));
+        }
+
+        // If the neighboring pixel is outside the image, skip
+        if (nx < 0 || nx >= filledOutlineImg.width || ny < 0 || ny >= filledOutlineImg.height) continue;
+
+        int nIndex = ny * filledOutlineImg.width + nx;
+
+        // If inside, looking for non-white
+        if (inside) {
+          if (filledOutlineImg.pixels[nIndex] != white) {
+            minDistance = i;
+            return minDistance;
+          }
+        } else { // If outside, looking for white
+          if (filledOutlineImg.pixels[nIndex] == white) {
+            minDistance = i;
+            return minDistance * -1;
+          }
+        }
+      }
+    }
+  }
+
+  return minDistance * ((inside) ? 1 : -1);
+}
+
+/*
+float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
   
   // If the centre of the cell is outside the image, return a distance of -infinity to discard it
   if (x < 0 || x >= filledOutlineImg.width || y < 0 || y >= filledOutlineImg.height) {
@@ -327,3 +380,4 @@ float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
   //println("end searching for distance");
   return minDistance * ((inside) ? 1 : -1);
 }
+*/
