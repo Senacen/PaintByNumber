@@ -29,6 +29,8 @@ color white = color(255, 255, 255); // Processing
 
 // Label Locations
 ArrayList<int[]> labels;
+int minLabelSize = 10;
+int maxLabelSize = 50;
 
 void settings() {
   //img = loadImage("Images/colour wheel.png");
@@ -170,7 +172,7 @@ void mouseReleased() {
   
 }
 
-PImage testImg;
+//PImage testImg;
 void draw() {
   background(0);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
@@ -178,15 +180,18 @@ void draw() {
   image(resultImg, img.width, 0);
   image(paintByNumberImg, img.width + resultImg.width, 0);
   image(paletteImg, 0, img.height);
-  image(testImg, 0, 0);
+  //image(testImg, 0, 0);
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
   
    textAlign(CENTER, CENTER);
    fill(0);
-   textSize(100);
+   
   // Draw labels
   for (int[] label : labels) {
+    int labelSize = max(label[2], minLabelSize);
+    labelSize = min(labelSize, maxLabelSize);
+    textSize(labelSize); // set size to be proportional to the max distance
     text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
   }
   // Draw selection rectangle

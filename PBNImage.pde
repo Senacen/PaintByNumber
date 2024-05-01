@@ -2,7 +2,7 @@
 int regionLabelThreshold = 50;
 
 // Precision for finding optimal pole
-int precision = 5;
+int precision = 10;
 
 PImage pbnImage(PImage inputImg) {
   //println("reached pbni");
@@ -48,10 +48,10 @@ PImage outlineImage(PImage inputImg) {
 // Input img is just the outline
 ArrayList<int[]> calculateLabels(PImage inputImg) {
   PImage filledOutlineImg = resultImg.copy();
-  testImg = inputImg.copy();
+  //testImg = inputImg.copy();
   labels = new ArrayList<int[]>();
   filledOutlineImg.loadPixels();
-  testImg.loadPixels();
+  //testImg.loadPixels();
   resultImg.loadPixels();
   
   // Combine the outline and the filled colours
@@ -74,7 +74,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
       filledOutlineImg.loadPixels();
       int index = y * filledOutlineImg.width + x;
       color colour = filledOutlineImg.pixels[index];
-      color newColour = color(random(256), random(256), random(256));
+      //color newColour = color(random(256), random(256), random(256));
       //println(x, y);
       
       
@@ -117,7 +117,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
                 rightX = max(rightX, neighbourX);
                 bottomY = max(bottomY, neighbourY);
                 
-                testImg.pixels[neighbourIndex] = newColour;
+                //testImg.pixels[neighbourIndex] = newColour;
               }
             }
           }
@@ -326,6 +326,4 @@ float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
   }
   //println("end searching for distance");
   return minDistance * ((inside) ? 1 : -1);
-  
-  
 }
