@@ -1,8 +1,11 @@
 // Size threshold of region to start labelling
 int regionLabelThreshold = 50;
 
+// Precision for finding optimal pole
+int precision = 5;
+
 PImage pbnImage(PImage inputImg) {
-  println("reached pbni");
+  //println("reached pbni");
   PImage outputImg = outlineImage(inputImg);
   labels = calculateLabels(outputImg);
   return outputImg;
@@ -65,7 +68,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
   // Create bfs once and reuse
   Queue<PVector> bfs = new LinkedList<>();
   int countRegions = 0;
-  println("reached search");
+  //println("reached search");
   for (int x = 0; x < filledOutlineImg.width; x++) {
     for (int y = 0; y < filledOutlineImg.height; y++) {
       filledOutlineImg.loadPixels();
@@ -85,10 +88,14 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
         // Push first and mark as processing
         bfs.add(new PVector(x,y));
         filledOutlineImg.pixels[index] = white;
-        println("started bfs");
+        //println("started bfs");
+        
+        // Count how many pixels in the region to see if should add label or not
+        int regionSize = 0;
         while (!bfs.isEmpty()) {
           PVector top = bfs.remove();
-          int topIndex = int(top.y * filledOutlineImg.width + top.x);
+          regionSize++;
+          //int topIndex = int(top.y * filledOutlineImg.width + top.x);
           //filledOutlineImg.pixels[topIndex] = newColour;
           countPixels++;
           sumX += top.x;
@@ -115,7 +122,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
             }
           }
         }
-        println("ended bfs");
+        //println("ended bfs");
         
         // Calc centroid
         int centroidX = sumX / countPixels;
@@ -123,16 +130,18 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
         // Find the pole
         filledOutlineImg.updatePixels();
         
+        if (regionSize >= regionLabelThreshold) {
+          PVector pole = poleOfInacessibility(filledOutlineImg, precision, leftX, topY, rightX, bottomY, centroidX, centroidY); // 5 pixels distance is the precision to stop searching for improvement
+          // Create the label info
+          //println("reached adding a label");
+          int[] label = new int[4];
+          label[0] = int(pole.x);
+          label[1] = int(pole.y);
+          label[2] = int(pole.z);
+          label[3] = palette.indexOf(colour);
+          labels.add(label);
+        }
         
-        PVector pole = poleOfInacessibility(filledOutlineImg, 100, leftX, topY, rightX, bottomY, centroidX, centroidY); // 5 pixels distance is the precision to stop searching for improvement
-        // Create the label info
-        println("reached adding a label");
-        int[] label = new int[4];
-        label[0] = int(pole.x);
-        label[1] = int(pole.y);
-        label[2] = int(pole.z);
-        label[3] = palette.indexOf(colour);
-        labels.add(label);
         
         
         // Mark all those pixels as processed
@@ -146,7 +155,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
             }
           }
         }
-        println("marked all pixels as processed");
+        //println("marked all pixels as processed");
         PImage intermediateImg = filledOutlineImg.copy();
         intermediateImg.updatePixels();
         //intermediateImg.save("Saves/intermediateImgProcessed" + countRegions + ".jpg");
@@ -158,7 +167,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
   filledOutlineImg.updatePixels();
   println(countRegions);
   //testImg = filledOutlineImg.copy();
-  println("reached returning all the labels");
+  //println("reached returning all the labels");
   return labels;
 }
 
@@ -198,9 +207,9 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
   
   // Update best cell if second guess was better
   if (bboxCell.d > bestCell.d) bestCell = bboxCell;
-  println("reached starting the queue");
+  //println("reached starting the queue");
   while (!cellQueue.isEmpty()) {
-    println(cellQueue.size());
+    //println(cellQueue.size());
     Cell mostPromising = cellQueue.poll();
     
     // If this solution where the pole is the centre is better, update best cell
@@ -220,7 +229,7 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
     cellQueue.add(new Cell(mostPromising.x + h, mostPromising.y + h, h, filledOutlineImg));
     
   }
-  println("reached return pvector");
+  //println("reached return pvector");
   return new PVector(bestCell.x, bestCell.y, bestCell.d);
   
 }
