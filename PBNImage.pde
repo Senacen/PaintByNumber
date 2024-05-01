@@ -71,7 +71,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
   //println("reached search");
   for (int x = 0; x < filledOutlineImg.width; x++) {
     for (int y = 0; y < filledOutlineImg.height; y++) {
-      filledOutlineImg.loadPixels();
+      //filledOutlineImg.loadPixels();
       int index = y * filledOutlineImg.width + x;
       color colour = filledOutlineImg.pixels[index];
       //color newColour = color(random(256), random(256), random(256));
@@ -128,7 +128,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
         int centroidX = sumX / countPixels;
         int centroidY = sumY / countPixels;
         // Find the pole
-        filledOutlineImg.updatePixels();
+        //filledOutlineImg.updatePixels();
         
         if (regionSize >= regionLabelThreshold) {
           PVector pole = poleOfInacessibility(filledOutlineImg, precision, leftX, topY, rightX, bottomY, centroidX, centroidY); // 5 pixels distance is the precision to stop searching for improvement
@@ -145,7 +145,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
         
         
         // Mark all those pixels as processed
-        filledOutlineImg.loadPixels();
+        //filledOutlineImg.loadPixels();
         for (int i = leftX; i <= rightX; i++) {
           for (int j = topY; j <= bottomY; j++) {
             int processedPixelIndex = j * filledOutlineImg.width + i;
@@ -164,7 +164,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
       
     }
   }
-  filledOutlineImg.updatePixels();
+  //filledOutlineImg.updatePixels();
   println(countRegions);
   //testImg = filledOutlineImg.copy();
   //println("reached returning all the labels");
