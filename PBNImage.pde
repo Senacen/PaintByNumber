@@ -1,4 +1,8 @@
+// Size threshold of region to start labelling
+int regionLabelThreshold = 50;
+
 PImage pbnImage(PImage inputImg) {
+  println("reached pbni");
   PImage outputImg = outlineImage(inputImg);
   labels = calculateLabels(outputImg);
   return outputImg;
@@ -61,28 +65,30 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
   // Create bfs once and reuse
   Queue<PVector> bfs = new LinkedList<>();
   int countRegions = 0;
+  println("reached search");
   for (int x = 0; x < filledOutlineImg.width; x++) {
     for (int y = 0; y < filledOutlineImg.height; y++) {
+      filledOutlineImg.loadPixels();
       int index = y * filledOutlineImg.width + x;
       color colour = filledOutlineImg.pixels[index];
       color newColour = color(random(256), random(256), random(256));
       //println(x, y);
       
       
-      if (colour != black) {
+      if (colour != black && colour != white) {
         countRegions++;
         
         // Bounding box init to first pixel
         int leftX = x, topY = y, rightX = x, bottomY = y;
         // Sum of every x and y and the count of the pixels for first guess as the centroid of the region
         int sumX = 0, sumY = 0, countPixels = 0;
-        // Push first and mark as visited
+        // Push first and mark as processing
         bfs.add(new PVector(x,y));
-        filledOutlineImg.pixels[index] = black;
+        filledOutlineImg.pixels[index] = white;
+        println("started bfs");
         while (!bfs.isEmpty()) {
           PVector top = bfs.remove();
           int topIndex = int(top.y * filledOutlineImg.width + top.x);
-          filledOutlineImg.pixels[topIndex] = black;
           //filledOutlineImg.pixels[topIndex] = newColour;
           countPixels++;
           sumX += top.x;
@@ -97,7 +103,7 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
               if (filledOutlineImg.pixels[neighbourIndex] == colour) {
                 bfs.add(new PVector(neighbourX, neighbourY));
                 // Mark as visited immediately so it doesn't add again
-                filledOutlineImg.pixels[neighbourIndex] = black;
+                filledOutlineImg.pixels[neighbourIndex] = white;
                 // Update bounding box
                 leftX = min(leftX, neighbourX);
                 topY = min(topY, neighbourY);
@@ -109,22 +115,26 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
             }
           }
         }
+        println("ended bfs");
         
         // Calc centroid
         int centroidX = sumX / countPixels;
         int centroidY = sumY / countPixels;
         // Find the pole
         filledOutlineImg.updatePixels();
-        /*
-        PVector pole = poleOfInacessibility(filledOutlineImg, 5, leftX, topY, rightX, bottomY, centroidX, centroidY); // 5 pixels distance is the precision to stop searching for improvement
+        
+        
+        PVector pole = poleOfInacessibility(filledOutlineImg, 100, leftX, topY, rightX, bottomY, centroidX, centroidY); // 5 pixels distance is the precision to stop searching for improvement
         // Create the label info
+        println("reached adding a label");
         int[] label = new int[4];
         label[0] = int(pole.x);
         label[1] = int(pole.y);
         label[2] = int(pole.z);
         label[3] = palette.indexOf(colour);
         labels.add(label);
-        */
+        
+        
         // Mark all those pixels as processed
         filledOutlineImg.loadPixels();
         for (int i = leftX; i <= rightX; i++) {
@@ -136,7 +146,10 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
             }
           }
         }
-        filledOutlineImg.updatePixels();
+        println("marked all pixels as processed");
+        PImage intermediateImg = filledOutlineImg.copy();
+        intermediateImg.updatePixels();
+        //intermediateImg.save("Saves/intermediateImgProcessed" + countRegions + ".jpg");
         
     }
       
@@ -145,24 +158,30 @@ ArrayList<int[]> calculateLabels(PImage inputImg) {
   filledOutlineImg.updatePixels();
   println(countRegions);
   //testImg = filledOutlineImg.copy();
+  println("reached returning all the labels");
   return labels;
 }
 
 PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, int topY, int rightX, int bottomY, int centroidX, int centroidY) {
-  
+  //image(filledOutlineImg, 0, 0);
   PriorityQueue<Cell> cellQueue = new PriorityQueue<Cell>(new compareMaxPossibleD());
   
   int regionWidth = rightX - leftX;
   int regionHeight = bottomY - topY;
   
   int minDimension = min(regionWidth, regionHeight);
-  // Degenerate case where bounding box is only one pixel wide or tall
+  // Degenerate case where bounding box is only one pixel wide or tall or 
   if (minDimension == 0) {
     return new PVector(leftX, topY, 0);
   }
   
   int cellSize = minDimension / 4; // How many cells to split the smallest dimension into
   int h = cellSize / 2;
+  
+  // Degenerate case where cells are too small (caused covering bounding box infinitely)
+  if (h == 0) {
+    return new PVector(leftX, topY, 0);
+  }
   
   // Cover bounding box with cells;
   for (int x = leftX; x <= rightX; x += cellSize) {
@@ -179,8 +198,9 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
   
   // Update best cell if second guess was better
   if (bboxCell.d > bestCell.d) bestCell = bboxCell;
-  
+  println("reached starting the queue");
   while (!cellQueue.isEmpty()) {
+    println(cellQueue.size());
     Cell mostPromising = cellQueue.poll();
     
     // If this solution where the pole is the centre is better, update best cell
@@ -193,13 +213,14 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
     
     // If possible that a point in the most promising could beat best cell, probe further
     h = mostPromising.h / 2;
+    if (h <= precision) continue;
     cellQueue.add(new Cell(mostPromising.x - h, mostPromising.y - h, h, filledOutlineImg));
     cellQueue.add(new Cell(mostPromising.x + h, mostPromising.y - h, h, filledOutlineImg));
     cellQueue.add(new Cell(mostPromising.x - h, mostPromising.y + h, h, filledOutlineImg));
     cellQueue.add(new Cell(mostPromising.x + h, mostPromising.y + h, h, filledOutlineImg));
     
   }
-  
+  println("reached return pvector");
   return new PVector(bestCell.x, bestCell.y, bestCell.d);
   
 }
@@ -240,7 +261,7 @@ class Cell {
     radius = sqrt(2) * h;
     
     d = signedDistanceToOutline(x, y, filledOutlineImg);
-    
+    //d = 10;
     maxPossibleD = d + radius;
   }
 }
@@ -256,38 +277,45 @@ float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
   int startIndex = y * filledOutlineImg.width + x;
   
   // If the pixels is white, its inside the region
-  boolean inside = filledOutlineImg.pixels[startIndex] == white;
+  boolean inside = (filledOutlineImg.pixels[startIndex] == white);
   
   float minDistance = 0;
   
   // Max it'll have to travel is the largest dimension of the img
+  //println("start searching for distance");
   for (int i = 1; i < max(filledOutlineImg.width, filledOutlineImg.height); i++) {
-    int upIndex = (y - i) * filledOutlineImg.width + x;
-    int downIndex = (y + i) * filledOutlineImg.width + x;
-    int leftIndex = y * filledOutlineImg.width + (x - i);
-    int rightIndex = y * filledOutlineImg.width + (x + i);
+    
+    int upY = y - i;
+    int downY = y + i;
+    int leftX = x - i;
+    int rightX = x + i;
+    
+    int upIndex = upY * filledOutlineImg.width + x;
+    int downIndex = downY * filledOutlineImg.width + x;
+    int leftIndex = y * filledOutlineImg.width + leftX;
+    int rightIndex = y * filledOutlineImg.width + rightX;
     
     // If inside, looking for non white
     if (inside) {
-      if (upIndex >= 0 && filledOutlineImg.pixels[upIndex] != white || 
-      downIndex < filledOutlineImg.height && filledOutlineImg.pixels[downIndex] != white || 
-      leftIndex >= 0 && filledOutlineImg.pixels[leftIndex] != white || 
-      rightIndex < filledOutlineImg.width && filledOutlineImg.pixels[rightIndex] != white) {
+      if (upY >= 0 && filledOutlineImg.pixels[upIndex] != white || 
+      downY < filledOutlineImg.height && filledOutlineImg.pixels[downIndex] != white || 
+      leftX >= 0 && filledOutlineImg.pixels[leftIndex] != white || 
+      rightX < filledOutlineImg.width && filledOutlineImg.pixels[rightIndex] != white) {
         minDistance = i;
         break;
       }
     // If outside, looking for white
     } else {
-      if (upIndex >= 0 && filledOutlineImg.pixels[upIndex] == white || 
-      downIndex < filledOutlineImg.height && filledOutlineImg.pixels[downIndex] == white || 
-      leftIndex >= 0 && filledOutlineImg.pixels[leftIndex] == white || 
-      rightIndex < filledOutlineImg.width && filledOutlineImg.pixels[rightIndex] == white) {
+      if (upY >= 0 && filledOutlineImg.pixels[upIndex] == white || 
+      downY < filledOutlineImg.height && filledOutlineImg.pixels[downIndex] == white || 
+      leftX >= 0 && filledOutlineImg.pixels[leftIndex] == white || 
+      rightX < filledOutlineImg.width && filledOutlineImg.pixels[rightIndex] == white) {
         minDistance = i;
         break;
       }
     }
   }
-  
+  //println("end searching for distance");
   return minDistance * ((inside) ? 1 : -1);
   
   

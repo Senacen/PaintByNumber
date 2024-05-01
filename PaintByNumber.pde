@@ -35,6 +35,7 @@ void settings() {
   //img = loadImage("Images/hill.jpg");
   //img = loadImage("Images/big hill.jpg");
   img = loadImage("Images/face.jpg");
+  //img = loadImage("Images/squares.png");
   //img = loadImage("Images/mayflower.jpg");
   //img = loadImage("Images/holloway.jpg");
   //img = loadImage("Images/raze.jpg");
