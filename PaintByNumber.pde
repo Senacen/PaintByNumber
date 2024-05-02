@@ -36,6 +36,7 @@ color white = color(255, 255, 255); // Processing
 ArrayList<int[]> labels;
 int minLabelSize = 10;
 int maxLabelSize = 50;
+boolean labelling = false;
 
 void settings() {
   //img = loadImage("Images/colour wheel.png");
@@ -116,6 +117,10 @@ void keyPressed() {
   } else if (key == 'r'){
     resultImg = colourImage(img);
     paintByNumberImg = pbnImage(resultImg);
+  } else if (key == 'l'){
+    labelling = !labelling;
+    // Don't recalculate resultImg as that will ignore smoothing
+    paintByNumberImg = pbnImage(resultImg);
   } else if (key == CODED) {
     if (keyCode == UP) {
       blurKernelSize += 2;
@@ -195,12 +200,15 @@ void draw() {
    fill(0);
    
   // Draw labels
-  for (int[] label : labels) {
-    int labelSize = max(label[2], minLabelSize);
-    labelSize = min(labelSize, maxLabelSize);
-    textSize(labelSize); // set size to be proportional to the max distance
-    text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
+  if (labelling) {
+    for (int[] label : labels) {
+      int labelSize = max(label[2], minLabelSize);
+      labelSize = min(labelSize, maxLabelSize);
+      textSize(labelSize); // set size to be proportional to the max distance
+      text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
+    }
   }
+  
   // Draw selection rectangle
   if (dragging) {
     fill(255, 255, 255, 50);

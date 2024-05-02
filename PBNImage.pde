@@ -7,7 +7,9 @@ int precision = 1;
 PImage pbnImage(PImage inputImg) {
   //println("reached pbni");
   PImage outputImg = outlineImage(inputImg);
-  labels = calculateLabels(outputImg);
+  if (labelling) {
+    labels = calculateLabels(outputImg);
+  }
   return outputImg;
 }
 
