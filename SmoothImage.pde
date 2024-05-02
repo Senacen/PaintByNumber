@@ -18,8 +18,8 @@ PImage blurImage(PImage inputImg, int startX, int startY, int endX, int endY) {
   float weight = 1f / blurKernelSize;
   int boundary = (blurKernelSize - 1) / 2;
   
-  // Horizontal Pass
-  for (int y = startY + boundary; y < endY - boundary; y++) {
+  // Horizontal Pass (will blur vertical extremes just horizontally, as they will be outside the kernel size for vertical)
+  for (int y = startY; y < endY; y++) {
     // Initialise the sliding window
     float rSum = 0;
     float gSum = 0;
@@ -65,8 +65,8 @@ PImage blurImage(PImage inputImg, int startX, int startY, int endX, int endY) {
   // Change inputImg to the blurred first pass
   inputImg = outputImg.copy();
   
-  // Vertical Pass
-  for (int x = startX + boundary; x < endX - boundary; x++) {
+  // Vertical Pass (will blur horizontal extremes just vertically, as they will be outside the kernel size for horizontal)
+  for (int x = startX; x < endX; x++) {
     // Initialise the sliding window
     float rSum = 0;
     float gSum = 0;

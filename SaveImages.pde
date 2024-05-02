@@ -1,5 +1,4 @@
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
+
 
 void saveImages() {
    println("saving");

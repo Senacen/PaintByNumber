@@ -1,7 +1,7 @@
 // Size threshold of region to start labelling
 int regionLabelThreshold = 50;
 
-// Precision for finding optimal pole
+// Precision for finding optimal pole, when is too small can mess up small cells
 int precision = 1;
 
 PImage pbnImage(PImage inputImg) {

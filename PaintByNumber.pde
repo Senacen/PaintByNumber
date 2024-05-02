@@ -1,4 +1,9 @@
-import java.util.*;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 // Images
 PImage img;
@@ -7,8 +12,8 @@ PImage paintByNumberImg;
 PImage paletteImg;
 
 // Image resize dimensions
-int imgResizeWidth = 800; // only width, as height has to be scaled proportionally
-int paletteImgResizeWidth = 500;
+int imgResizeWidth = 1000; // only width, as height has to be scaled proportionally
+int paletteImgResizeWidth = 1000;
 int paletteImgResizeHeight = 500;
 
 // Palette draw settings
@@ -46,18 +51,20 @@ void settings() {
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
   //paletteImg = loadImage("Images/colour wheel.png");
-  paletteImg = loadImage("Images/palette.jpg");
+  //paletteImg = loadImage("Images/palette.jpg");
   //paletteImg = loadImage("Images/raze.jpg");
   //paletteImg = loadImage("Images/face.jpg");
   //paletteImg = loadImage("Images/PBNifyTestPalette.png");
   //paletteImg = loadImage("Images/mayflower.jpg");
+//paletteImg = loadImage("Images/paints.jpg");
+  paletteImg = loadImage("Images/fullPaints.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
 }
 
 void setup() {
   // Startup location
-  surface.setLocation(100, 100);
+  surface.setLocation(0, 0);
   palette = new ArrayList<Integer> (); //<>//
   resultImg = colourImage(img);
   paintByNumberImg = pbnImage(resultImg);
