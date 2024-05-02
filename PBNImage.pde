@@ -179,17 +179,17 @@ PVector poleOfInacessibility(PImage filledOutlineImg, int precision, int leftX, 
   int regionHeight = bottomY - topY;
   
   int minDimension = min(regionWidth, regionHeight);
-  // Degenerate case where bounding box is only one pixel wide or tall or 
+  // Degenerate case where bounding box is only one pixel wide or tall just return centroid
   if (minDimension == 0) {
-    return new PVector(leftX, topY, 0);
+    return new PVector(centroidX, centroidY, 0);
   }
   
   int cellSize = minDimension / 4; // How many cells to split the smallest dimension into
   int h = cellSize / 2;
   
-  // Degenerate case where cells are too small (caused covering bounding box infinitely)
+  // Degenerate case where cells are too small (caused covering bounding box infinitely) just return centroid
   if (cellSize == 0) {
-    return new PVector(leftX, topY, 0);
+    return new PVector(centroidX, centroidY, 0);
   }
   
   // Cover bounding box with cells;
@@ -299,8 +299,8 @@ float signedDistanceToOutline(int x, int y, PImage filledOutlineImg) {
         int ny = y + dy * i;
         
          if (diagonal) {
-          nx = x + int((dx * i) / sqrt(2));
-          ny = y + int((dy * i) / sqrt(2));
+          nx = x + round((dx * i) / sqrt(2));
+          ny = y + round((dy * i) / sqrt(2));
         }
 
         // If the neighboring pixel is outside the image, skip
