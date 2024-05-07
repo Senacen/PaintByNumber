@@ -5,7 +5,13 @@ void saveImages() {
    loadPixels();
    PImage saveFilledImg = get(img.width, 0, resultImg.width, resultImg.height);
    PImage savePaintByNumberImg = get(img.width + resultImg.width, 0, paintByNumberImg.width, paintByNumberImg.height);
-   PImage savePalette = get(paletteImg.width, img.height, width - paletteImg.width, height - img.height);
+   
+   // Calculating palette save bounds
+   int x = paletteLeftX - paletteRectSpacing;
+   int y = paletteTopY - paletteRectSpacing;
+   int savePaletteWidth = min(width, paletteRightX + paletteRectSpacing) - x; // Make sure in the window
+   int savePaletteHeight = min(height, paletteBottomY + paletteRectSpacing) - y;
+   PImage savePalette = get(x, y, savePaletteWidth, savePaletteHeight);
    saveFilledImg.save(folderName + "/filledImg.jpg");
    savePaintByNumberImg.save(folderName + "/paintByNumberImg.jpg");
    savePalette.save(folderName + "/palette.jpg");

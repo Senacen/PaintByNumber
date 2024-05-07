@@ -18,8 +18,8 @@ int paletteImgResizeHeight = 500;
 
 // Palette draw settings
 int paletteRectWidth = 50;
-int paletteRectSpacing = 50;
-int paletteRectRadius = 10;
+int paletteRectSpacing = 50; // Spacing between palette rects, and between palette rects and the borders of the palette
+int paletteRectRadius = 0; // Smooths the corners
 
 ArrayList<Integer> palette; // requires Integer class, as color is a primitive
 ArrayList<Integer> paintCounts; // To calculate how much of the picture uses the paint
@@ -40,15 +40,22 @@ int minLabelSize = 10;
 int maxLabelSize = 50;
 boolean labelling = false;
 
+// Palette bounds for saving
+int paletteLeftX;
+int paletteRightX;
+int paletteTopY;
+int paletteBottomY;
+
+
 void settings() {
-  //String imgFile = "face.jpg";
+  String imgFile = "face.jpg";
   //String imgFile = "colour wheel.png";
   //String imgFile = "hill.jpg";
   //String imgFile = "big hill.jpg";
   //String imgFile = "squares.png";
   //String imgFile = "mayflower.jpg";
   //String imgFile = "holloway.jpg";
-   String imgFile = "raze.jpg";
+  //String imgFile = "raze.jpg";
   //String imgFile = "artAutumn.jpg";
   
   img = loadImage("Images/" + imgFile);
@@ -56,8 +63,8 @@ void settings() {
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
   
-  String paletteImgFile = "pencils.jpg";
-  //String paletteImgFile = "fullPaints.jpg";
+  //String paletteImgFile = "pencils.jpg";
+  String paletteImgFile = "fullPaints.jpg";
   //String paletteImgFile = "colour wheel.png";
   //String paletteImgFile = "palette.jpg";
   //String paletteImgFile = "raze.jpg";
@@ -195,7 +202,7 @@ void mouseReleased() {
   
 }
 
-//PImage testImg;
+
 void draw() {
   background(255);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
@@ -203,7 +210,11 @@ void draw() {
   image(resultImg, img.width, 0);
   image(paintByNumberImg, img.width + resultImg.width, 0);
   image(paletteImg, 0, img.height);
-  //image(testImg, 0, 0);
+  //Reset palette bounds
+  paletteLeftX = width;
+  paletteRightX = 0;
+  paletteTopY = height;
+  paletteBottomY = 0;
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
   
@@ -252,14 +263,20 @@ void drawPalette() {
     int rectWidth = paletteRectWidth;
     int x = paletteImg.width + spacing * (column + 1) + rectWidth * column;
     // If offscreen, start a new row
-    if (x + rectWidth + spacing> width) {
+    if (x + rectWidth + spacing > width) {
       row++;
       column = 0;
       // Recalculate for new row
       x = paletteImg.width + spacing * (column + 1) + rectWidth * column;
     }
     int y = img.height + spacing * (row + 1) + rectWidth * row;
-    rect(x, y, rectWidth, rectWidth);
+    rect(x, y, rectWidth, rectWidth, paletteRectRadius);
+    
+    // Update bounds if necessary for save
+    paletteLeftX = min(paletteLeftX, x);
+    paletteRightX = max(paletteRightX, x + rectWidth); // Add rectWidth to find right side, as x is the left corner
+    paletteTopY = min(paletteTopY, y);
+    paletteBottomY = max(paletteBottomY, y + rectWidth); // Add rectWidth to find bottom side, as y is the top corner
     
     // Draw the number of the paint
     textAlign(CENTER, CENTER);
