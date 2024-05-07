@@ -41,27 +41,31 @@ int maxLabelSize = 50;
 boolean labelling = false;
 
 void settings() {
-  //img = loadImage("Images/colour wheel.png");
-  //img = loadImage("Images/hill.jpg");
-  //img = loadImage("Images/big hill.jpg");
-  img = loadImage("Images/face.jpg");
-  //img = loadImage("Images/squares.png");
-  //img = loadImage("Images/mayflower.jpg");
-  //img = loadImage("Images/holloway.jpg");
-  //img = loadImage("Images/raze.jpg");
-  //img = loadImage("Images/artAutumn.jpg");
+  //String imgFile = "face.jpg";
+  //String imgFile = "colour wheel.png";
+  //String imgFile = "hill.jpg";
+  //String imgFile = "big hill.jpg";
+  //String imgFile = "squares.png";
+  //String imgFile = "mayflower.jpg";
+  //String imgFile = "holloway.jpg";
+   String imgFile = "raze.jpg";
+  //String imgFile = "artAutumn.jpg";
+  
+  img = loadImage("Images/" + imgFile);
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
-  //paletteImg = loadImage("Images/colour wheel.png");
-  //paletteImg = loadImage("Images/palette.jpg");
-  //paletteImg = loadImage("Images/raze.jpg");
-  //paletteImg = loadImage("Images/face.jpg");
-  //paletteImg = loadImage("Images/PBNifyTestPalette.png");
-  //paletteImg = loadImage("Images/mayflower.jpg");
-  //paletteImg = loadImage("Images/paints.jpg");
-  //paletteImg = loadImage("Images/fullPaints.jpg");
-  paletteImg = loadImage("Images/pencils.jpg");
+  
+  String paletteImgFile = "pencils.jpg";
+  //String paletteImgFile = "fullPaints.jpg";
+  //String paletteImgFile = "colour wheel.png";
+  //String paletteImgFile = "palette.jpg";
+  //String paletteImgFile = "raze.jpg";
+  //String paletteImgFile = "face.jpg";
+  //String paletteImgFile = "PBNifyTestPalette.png";
+  //String paletteImgFile = "mayflower.jpg";
+  //String paletteImgFile = "paints.jpg";
+  paletteImg = loadImage("Images/" + paletteImgFile);
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
 }
