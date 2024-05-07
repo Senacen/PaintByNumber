@@ -31,6 +31,7 @@ boolean dragging = false;
 // Colour constants reserved
 color black = color(0, 0, 0); // Outline
 color white = color(255, 255, 255); // Processing
+boolean blackAndWhiteMode = false;
 
 // Label Locations
 ArrayList<int[]> labels;
@@ -122,6 +123,10 @@ void keyPressed() {
     labelling = !labelling;
     // Don't recalculate resultImg as that will ignore smoothing
     paintByNumberImg = pbnImage(resultImg);
+  } else if (key == 'b'){
+    blackAndWhiteMode = !blackAndWhiteMode;
+    // Don't recalculate resultImg as that will ignore smoothing
+    paintByNumberImg = pbnImage(resultImg);
   } else if (key == CODED) {
     if (keyCode == UP) {
       blurKernelSize += 2;
@@ -206,7 +211,7 @@ void draw() {
       int labelSize = max(label[2], minLabelSize);
       labelSize = min(labelSize, maxLabelSize);
       textSize(labelSize); // set size to be proportional to the max distance
-      fill(palette.get(label[3]));
+      fill((blackAndWhiteMode) ? black : palette.get(label[3])); // If black and white mode, label will be black, if colour mode, label will the colour of the region
       text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
     }
   }

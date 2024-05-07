@@ -10,7 +10,9 @@ PImage pbnImage(PImage inputImg) {
   if (labelling) {
     labels = calculateLabels(outputImg);
   }
-  outputImg = colourOutlineImage(outputImg);
+  if (!blackAndWhiteMode) {
+    outputImg = colourOutlineImage(outputImg);
+  }
   return outputImg;
 }
 
