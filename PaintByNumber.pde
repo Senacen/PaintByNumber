@@ -29,7 +29,8 @@ int startX, startY, endX, endY;
 boolean dragging = false;
 
 // Colour constants reserved
-color black = color(0, 0, 0); // Outline
+//color black = color(0, 0, 0); // Outline
+color black = color(128, 128, 128); // Outline
 color white = color(255, 255, 255); // Processing
 boolean blackAndWhiteMode = false;
 
