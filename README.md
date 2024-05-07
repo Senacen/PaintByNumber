@@ -1,9 +1,9 @@
 # Paint By Number Generator
 
 ## Notes
-Uses an image and a palette image from the Images folder - change which images to use by editing the imgFile and paletteImgFile variables.  
-The larger the image, the longer processing will take. Turn off labelling until you want it, as calculating label positions every time is expensive.  
-The percentage under each palette square shows the percentage of the image that is made up by that paint, rounded to 1dp.  
+* Uses an image and a palette image from the Images folder - change which images to use by editing the imgFile and paletteImgFile variables.  
+* The larger the image, the longer processing will take. Turn off labelling until you want it, as calculating label positions every time is expensive.  
+* The percentage under each palette square shows the percentage of the image that is made up by that paint, rounded to 1dp.  
 
 ## Mouse Controls:  
 Left click on the palette image to add that colour to the palette  
