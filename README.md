@@ -12,11 +12,11 @@
   
 ## Keyboard Controls:  
 **Space** to smooth the filled image  
-**l** to toggle labelling  
-**s** to save current pbn image, filled image, and palette  
-**m** to magnify  
-**r** to revert smoothing changes  
-**b** to toggle black and white mode  
-**up arrow** to increase the blur strength (blur kernel size)  
-**down arrow** to decrease the blur strength (blur kernel size)  
+**L** to toggle labelling  
+**S** to save current pbn image, filled image, and palette  
+**M** to magnify  
+**R** to revert smoothing changes  
+**B** to toggle black and white mode  
+**Up arrow** to increase the blur strength (blur kernel size)  
+**Down arrow** to decrease the blur strength (blur kernel size)  
 
