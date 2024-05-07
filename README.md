@@ -6,8 +6,11 @@
 * The percentage under each palette square shows the percentage of the image that is made up by that paint, rounded to 1dp.  
 * Label locations calculated using the [Pole Of Inaccessibility](https://en.wikipedia.org/wiki/Pole_of_inaccessibility) of each region, from modifying the algorithm created by the Mapbox team ([Explanation Blog](https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc), [GitHub Repo](https://github.com/mapbox/polylabel))
 * Colour distance used in finding the closest palette colour to paint a pixel is calculated using the redmean formula
+
 ![Redmean](https://wikimedia.org/api/rest_v1/media/math/render/svg/95ee06baaa28944c5b1e06876439d1b579cf03c9)  
+
 to more accurately calculate the [colour difference](https://en.wikipedia.org/wiki/Color_difference) in sRGB space for the human eye than using the Euclidean distance  
+
 ![Euclidean distance](https://wikimedia.org/api/rest_v1/media/math/render/svg/15763fc04b6dbbc90c64db3b39a1442106a394af)  
 
 ## Mouse Controls:  
