@@ -187,7 +187,7 @@ void mouseReleased() {
 
 //PImage testImg;
 void draw() {
-  background(0);
+  background(255);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
   image(img, 0, 0);
   image(resultImg, img.width, 0);
@@ -231,6 +231,7 @@ void draw() {
 
 
 void drawPalette() {
+  stroke(1);
   // Draw current palette
   int row = 0;
   int column = 0;
@@ -257,10 +258,14 @@ void drawPalette() {
     text(i + 1, x + rectWidth / 2, y + rectWidth / 2); // Draw index in the middle
     
     // Draw the percentage of the painting it makes up
-    fill(255);
+    fill(0);
     textSize(rectWidth / 4);
-    text((paintCounts.get(i)  * 100) / (resultImg.width * resultImg.height) + "%", x + rectWidth / 2, y + rectWidth + spacing / 4);
+    float percentage = (paintCounts.get(i)  * 100f) / (resultImg.width * resultImg.height);
+    // Round percentage to nearest decimal point
+    String roundedPercentage = String.format("%.1f", percentage);
+    text(roundedPercentage + "%", x + rectWidth / 2, y + rectWidth + spacing / 4);
     
     column++;
   }
+  noStroke();
 }
