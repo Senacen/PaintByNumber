@@ -1,5 +1,3 @@
-
-
 void saveImages() {
    println("saving");
    String folderName = "saves/" + getTimeStamp();
