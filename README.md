@@ -1,5 +1,5 @@
 # Paint By Number Generator
-
+Generates a Paint By Number from an input image and a palette image. Allows control over smoothing and paint picking.
 ## Notes
 * Uses an image and a palette image from the Images folder - change which images to use by editing the imgFile and paletteImgFile variables.  
 * The larger the image, the longer processing will take. Turn off labelling until you want it, as calculating label positions every time is expensive.  
