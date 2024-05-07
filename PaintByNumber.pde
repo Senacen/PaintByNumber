@@ -57,8 +57,9 @@ void settings() {
   //paletteImg = loadImage("Images/face.jpg");
   //paletteImg = loadImage("Images/PBNifyTestPalette.png");
   //paletteImg = loadImage("Images/mayflower.jpg");
-//paletteImg = loadImage("Images/paints.jpg");
-  paletteImg = loadImage("Images/fullPaints.jpg");
+  //paletteImg = loadImage("Images/paints.jpg");
+  //paletteImg = loadImage("Images/fullPaints.jpg");
+  paletteImg = loadImage("Images/pencils.jpg");
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
 }
@@ -205,6 +206,7 @@ void draw() {
       int labelSize = max(label[2], minLabelSize);
       labelSize = min(labelSize, maxLabelSize);
       textSize(labelSize); // set size to be proportional to the max distance
+      fill(palette.get(label[3]));
       text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
     }
   }
