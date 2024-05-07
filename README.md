@@ -32,3 +32,5 @@ to more accurately calculate the [colour difference](https://en.wikipedia.org/wi
 ![Filled Image](/Examples/smoothed/filledImg.jpg)  
 ![Paint By Number Image](/Examples/smoothed/paintByNumberImg.jpg)  
 ![Palette](/Examples/smoothed/palette.jpg)  
+### UI
+![User interface](Examples/ui.png)
