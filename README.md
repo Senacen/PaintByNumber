@@ -8,6 +8,7 @@
 * Colour distance used in finding the closest palette colour to paint a pixel is calculated using the redmean formula ![Redmean](https://wikimedia.org/api/rest_v1/media/math/render/svg/95ee06baaa28944c5b1e06876439d1b579cf03c9)  
 to more accurately calculate the [colour difference](https://en.wikipedia.org/wiki/Color_difference) in sRGB space for the human eye than using the Euclidean distance  
 ![Euclidean distance](https://wikimedia.org/api/rest_v1/media/math/render/svg/15763fc04b6dbbc90c64db3b39a1442106a394af)  
+
 ## Mouse Controls:  
 **Left click** on the palette image to add that colour to the palette  
 **Right click** on a colour in the palette image, palette, or filled image to remove that colour from the palette  
