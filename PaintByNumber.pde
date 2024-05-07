@@ -12,7 +12,7 @@ PImage paintByNumberImg;
 PImage paletteImg;
 
 // Image resize dimensions
-int imgResizeWidth = 1000; // only width, as height has to be scaled proportionally
+int imgResizeWidth = 1500; // only width, as height has to be scaled proportionally
 int paletteImgResizeWidth = 1000;
 int paletteImgResizeHeight = 500;
 

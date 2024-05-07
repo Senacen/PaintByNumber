@@ -12,9 +12,9 @@ void saveImages() {
    int savePaletteWidth = min(width, paletteRightX + paletteRectSpacing) - x; // Make sure in the window
    int savePaletteHeight = min(height, paletteBottomY + paletteRectSpacing) - y;
    PImage savePalette = get(x, y, savePaletteWidth, savePaletteHeight);
-   saveFilledImg.save(folderName + "/filledImg.jpg");
-   savePaintByNumberImg.save(folderName + "/paintByNumberImg.jpg");
-   savePalette.save(folderName + "/palette.jpg");
+   saveFilledImg.save(folderName + "/filledImg.png");
+   savePaintByNumberImg.save(folderName + "/paintByNumberImg.png");
+   savePalette.save(folderName + "/palette.png");
 }
 
 void createFolder(String folderName) {
