@@ -24,3 +24,8 @@ to more accurately calculate the [colour difference](https://en.wikipedia.org/wi
 **Up Arrow** to increase the blur strength (blur kernel size) for smoothing  
 **Down Arrow** to decrease the blur strength (blur kernel size) for smoothing  
 
+## Examples:
+![Filled Image](\Saves\2024.05.07_17.38.19\filledImg.jpg)  
+![Paint By Number Image](\Saves\2024.05.07_17.38.19\paintByNumberImg.jpg)  
+![Palette](\Saves\2024.05.07_17.38.19\palette.jpg)  
+
