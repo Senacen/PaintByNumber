@@ -25,6 +25,10 @@ to more accurately calculate the [colour difference](https://en.wikipedia.org/wi
 **Down Arrow** to decrease the blur strength (blur kernel size) for smoothing  
 
 ## Examples:
-![Filled Image](/Saves/2024.05.07_18.52.29/filledImg.jpg)  
-![Paint By Number Image](/Saves/2024.05.07_18.52.29/paintByNumberImg.jpg)  
-![Palette](/Saves/2024.05.07_18.52.29/palette.jpg)  
+### Unsmoothed
+![Filled Image](/Examples/unsmoothed/filledImg.jpg)  
+![Paint By Number Image](/Examples/unsmoothed/paintByNumberImg.jpg)  
+### Smoothed  
+![Filled Image](/Examples/smoothed/filledImg.jpg)  
+![Paint By Number Image](/Examples/smoothed/paintByNumberImg.jpg)  
+![Palette](/Examples/smoothed/palette.jpg)  
