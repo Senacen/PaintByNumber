@@ -17,6 +17,6 @@
 **M** to magnify  
 **R** to revert smoothing changes  
 **B** to toggle black and white mode  
-**Up Arrow** to increase the blur strength (blur kernel size) for smoothing
-**Down Arrow** to decrease the blur strength (blur kernel size) for smoothing
+**Up Arrow** to increase the blur strength (blur kernel size) for smoothing  
+**Down Arrow** to decrease the blur strength (blur kernel size) for smoothing  
 
