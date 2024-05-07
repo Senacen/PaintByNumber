@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 
 // Images
 PImage img;
@@ -12,7 +13,7 @@ PImage paintByNumberImg;
 PImage paletteImg;
 
 // Image resize dimensions
-int imgResizeWidth = 1500; // only width, as height has to be scaled proportionally
+int imgResizeWidth = 1000; // only width, as height has to be scaled proportionally
 int paletteImgResizeWidth = 1000;
 int paletteImgResizeHeight = 500;
 
@@ -23,6 +24,7 @@ int paletteRectRadius = 0; // Smooths the corners
 
 ArrayList<Integer> palette; // requires Integer class, as color is a primitive
 ArrayList<Integer> paintCounts; // To calculate how much of the picture uses the paint
+ArrayList<Integer[]> paletteWithCounts; // To sort both palette and paintCounts by the count
 
 // Selection rectangle for selective blurring variables
 int startX, startY, endX, endY;
@@ -48,16 +50,15 @@ int paletteBottomY;
 
 
 void settings() {
-  String imgFile = "face.jpg";
+  //String imgFile = "face.jpg";
   //String imgFile = "colour wheel.png";
   //String imgFile = "hill.jpg";
-  //String imgFile = "big hill.jpg";
   //String imgFile = "squares.png";
   //String imgFile = "mayflower.jpg";
   //String imgFile = "holloway.jpg";
   //String imgFile = "raze.jpg";
   //String imgFile = "artAutumn.jpg";
-  
+  String imgFile = "horizon.jpg";
   img = loadImage("Images/" + imgFile);
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
@@ -249,8 +250,28 @@ void draw() {
   }
   
 }
-
-
+class ColourCountComparator implements Comparator<Integer[]> {
+    public int compare(Integer[] c1, Integer[] c2) {
+        return -1 * Integer.compare(c1[1], c2[1]); // Times -1 to sort in reverse order, sorting on the counts which is [1]
+    }
+}
+// Sort the palette and paint count by paint count ascending
+void sortPalette() {
+  paletteWithCounts = new ArrayList<Integer[]>();
+  for (int i = 0; i < palette.size(); i++) {
+    Integer[] colourWithCount = new Integer[2];
+    colourWithCount[0] = palette.get(i);
+    colourWithCount[1] = paintCounts.get(i);
+    paletteWithCounts.add(colourWithCount);
+  }
+  Collections.sort(paletteWithCounts, new ColourCountComparator());
+  for (int i = 0; i < paletteWithCounts.size(); i++) {
+    Integer[] colourWithCount = paletteWithCounts.get(i);
+    palette.set(i, colourWithCount[0]);
+    paintCounts.set(i, colourWithCount[1]);
+  }
+  
+}
 void drawPalette() {
   stroke(1);
   // Draw current palette

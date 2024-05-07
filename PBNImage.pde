@@ -5,6 +5,7 @@ int regionLabelThreshold = 50;
 int precision = 1;
 
 PImage pbnImage(PImage inputImg) {
+  sortPalette(); // This is always called when the colours have changed, either from smooth or colour image
   //println("reached pbni");
   PImage outputImg = outlineImage(inputImg);
   if (labelling) {
