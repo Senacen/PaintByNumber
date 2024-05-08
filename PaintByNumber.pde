@@ -12,8 +12,15 @@ PImage resultImg;
 PImage paintByNumberImg;
 PImage paletteImg;
 
+// Image Paths
+String imgPath;
+String paletteImgPath;
+boolean imgPathSelected;
+boolean paletteImgPathSelected;
+boolean ready; // Used so draw does nothing until ready
+
 // Image resize dimensions
-int imgResizeWidth = 1000; // only width, as height has to be scaled proportionally
+int imgResizeWidth = 800; // only width, as height has to be scaled proportionally
 int paletteImgResizeWidth = 1000;
 int paletteImgResizeHeight = 500;
 
@@ -48,8 +55,11 @@ int paletteRightX;
 int paletteTopY;
 int paletteBottomY;
 
-
+/*
 void settings() {
+  imgPathSelected = false;
+  paletteImgPathSelected = false;
+  selectInput("Select the input image you wish to turn into a Paint by Number: ", "imgSelected");
   //String imgFile = "face.jpg";
   //String imgFile = "colour wheel.png";
   //String imgFile = "hill.jpg";
@@ -58,14 +68,16 @@ void settings() {
   //String imgFile = "holloway.jpg";
   //String imgFile = "raze.jpg";
   //String imgFile = "artAutumn.jpg";
-  String imgFile = "horizon.jpg";
-  img = loadImage("Images/" + imgFile);
+  //String imgFile = "horizon.jpg";
+  //img = loadImage("Images/" + imgFile);
+  img = loadImage(imgPath);
   img.resize(imgResizeWidth, 0);
   resultImg = img.copy();
   paintByNumberImg = createImage(img.width, img.height, RGB);
   
+  selectInput("Select the palette image you wish to pick your palette from: ", "imgSelected");
   //String paletteImgFile = "pencils.jpg";
-  String paletteImgFile = "fullPaints.jpg";
+  //String paletteImgFile = "fullPaints.jpg";
   //String paletteImgFile = "colour wheel.png";
   //String paletteImgFile = "palette.jpg";
   //String paletteImgFile = "raze.jpg";
@@ -73,11 +85,67 @@ void settings() {
   //String paletteImgFile = "PBNifyTestPalette.png";
   //String paletteImgFile = "mayflower.jpg";
   //String paletteImgFile = "paints.jpg";
-  paletteImg = loadImage("Images/" + paletteImgFile);
+  //paletteImg = loadImage("Images/" + paletteImgFile);
+  paletteImg = loadImage(paletteImgPath);
   paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
   size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
 }
+*/
 
+// Very messy calls to make sure the selectInput functions are completed before continuing
+// Normally, they are in external threads and therefore without chaining the functions, 
+// we try and fail to create the PImages before the files are chosen
+void setup() {
+  size(0,0);
+  surface.setLocation(0, 0);
+  initialiseImages();
+}
+
+void initialiseImages() {
+  ready = false;
+  imgPathSelected = false;
+  paletteImgPathSelected = false;
+  selectInput("Select the input image you wish to turn into a Paint by Number: ", "inputImgSelected"); 
+}
+
+void inputImgSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+    selectInput("Select the input image you wish to turn into a Paint by Number: ", "inputImgSelected"); 
+  } else {
+    imgPath = selection.getAbsolutePath();
+    imgPathSelected = true;
+    img = loadImage(imgPath);
+    img.resize(imgResizeWidth, 0);
+    resultImg = img.copy();
+    paintByNumberImg = createImage(img.width, img.height, RGB);
+    selectInput("Select the palette image you wish to pick your palette from: ", "paletteImgSelected");
+  }
+}
+
+void paletteImgSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+    selectInput("Select the palette image you wish to pick your palette from: ", "paletteImgSelected");
+  } else {
+    paletteImgPath = selection.getAbsolutePath();
+    paletteImgPathSelected = true;
+    paletteImg = loadImage(paletteImgPath);
+    paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
+    initialiseVariables();
+  }
+   
+}
+
+void initialiseVariables() {
+  surface.setSize(img.width + resultImg.width + img.width, img.height + paletteImg.height);
+  palette = new ArrayList<Integer> ();
+  resultImg = colourImage(img);
+  paintByNumberImg = pbnImage(resultImg);
+  ready = true;
+}
+
+/*
 void setup() {
   // Startup location
   surface.setLocation(0, 0);
@@ -85,7 +153,7 @@ void setup() {
   resultImg = colourImage(img);
   paintByNumberImg = pbnImage(resultImg);
 }
-
+*/
 
 void mouseClicked() {
   // Add paints with left click
@@ -205,6 +273,7 @@ void mouseReleased() {
 
 
 void draw() {
+  if (!ready) return;
   background(255);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
   image(img, 0, 0);
