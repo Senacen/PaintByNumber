@@ -15,9 +15,8 @@ PImage paletteImg;
 // Image Paths
 String imgPath;
 String paletteImgPath;
-boolean imgPathSelected;
-boolean paletteImgPathSelected;
-boolean ready; // Used so draw does nothing until ready
+
+boolean running; // Used so draw does nothing until images are loaded, or images have been loaded and a new one is being selected
 
 // Image resize dimensions
 int imgResizeWidth = 800; // only width, as height has to be scaled proportionally
@@ -55,42 +54,6 @@ int paletteRightX;
 int paletteTopY;
 int paletteBottomY;
 
-/*
-void settings() {
-  imgPathSelected = false;
-  paletteImgPathSelected = false;
-  selectInput("Select the input image you wish to turn into a Paint by Number: ", "imgSelected");
-  //String imgFile = "face.jpg";
-  //String imgFile = "colour wheel.png";
-  //String imgFile = "hill.jpg";
-  //String imgFile = "squares.png";
-  //String imgFile = "mayflower.jpg";
-  //String imgFile = "holloway.jpg";
-  //String imgFile = "raze.jpg";
-  //String imgFile = "artAutumn.jpg";
-  //String imgFile = "horizon.jpg";
-  //img = loadImage("Images/" + imgFile);
-  img = loadImage(imgPath);
-  img.resize(imgResizeWidth, 0);
-  resultImg = img.copy();
-  paintByNumberImg = createImage(img.width, img.height, RGB);
-  
-  selectInput("Select the palette image you wish to pick your palette from: ", "imgSelected");
-  //String paletteImgFile = "pencils.jpg";
-  //String paletteImgFile = "fullPaints.jpg";
-  //String paletteImgFile = "colour wheel.png";
-  //String paletteImgFile = "palette.jpg";
-  //String paletteImgFile = "raze.jpg";
-  //String paletteImgFile = "face.jpg";
-  //String paletteImgFile = "PBNifyTestPalette.png";
-  //String paletteImgFile = "mayflower.jpg";
-  //String paletteImgFile = "paints.jpg";
-  //paletteImg = loadImage("Images/" + paletteImgFile);
-  paletteImg = loadImage(paletteImgPath);
-  paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
-  size(img.width + resultImg.width + img.width, img.height + paletteImg.height);
-}
-*/
 
 // Very messy calls to make sure the selectInput functions are completed before continuing
 // Normally, they are in external threads and therefore without chaining the functions, 
@@ -102,23 +65,16 @@ void setup() {
 }
 
 void initialiseImages() {
-  ready = false;
-  imgPathSelected = false;
-  paletteImgPathSelected = false;
   selectInput("Select the input image you wish to turn into a Paint by Number: ", "inputImgSelected"); 
 }
 
 void inputImgSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
-    selectInput("Select the input image you wish to turn into a Paint by Number: ", "inputImgSelected"); 
+    if (!running) exit(); // If no image has been loaded now or previously, exit the program. 
+    // If it has been running, cancelling just returns the user back to their original images
   } else {
-    imgPath = selection.getAbsolutePath();
-    imgPathSelected = true;
-    img = loadImage(imgPath);
-    img.resize(imgResizeWidth, 0);
-    resultImg = img.copy();
-    paintByNumberImg = createImage(img.width, img.height, RGB);
+    imgPath = selection.getAbsolutePath(); // Store the image path, but don't create the image unless both input and palette images are succesfully selected
     selectInput("Select the palette image you wish to pick your palette from: ", "paletteImgSelected");
   }
 }
@@ -126,15 +82,21 @@ void inputImgSelected(File selection) {
 void paletteImgSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
-    selectInput("Select the palette image you wish to pick your palette from: ", "paletteImgSelected");
+    if (!running) exit(); // If no image has been loaded now or previously, exit the program. 
+    // If it has been running, cancelling just returns the user back to their original images
   } else {
+    // Both input and palette images have been succesfully selected, so create them.
+    img = loadImage(imgPath);
+    img.resize(imgResizeWidth, 0);
+    resultImg = img.copy();
+    paintByNumberImg = createImage(img.width, img.height, RGB);
     paletteImgPath = selection.getAbsolutePath();
-    paletteImgPathSelected = true;
     paletteImg = loadImage(paletteImgPath);
     paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
+    
+    // Reset variables back
     initialiseVariables();
   }
-   
 }
 
 void initialiseVariables() {
@@ -142,138 +104,11 @@ void initialiseVariables() {
   palette = new ArrayList<Integer> ();
   resultImg = colourImage(img);
   paintByNumberImg = pbnImage(resultImg);
-  ready = true;
-}
-
-/*
-void setup() {
-  // Startup location
-  surface.setLocation(0, 0);
-  palette = new ArrayList<Integer> (); //<>//
-  resultImg = colourImage(img);
-  paintByNumberImg = pbnImage(resultImg);
-}
-*/
-
-void mouseClicked() {
-  // Add paints with left click
-  // If the mouse is on the palette image
-  if (mouseButton == LEFT && mouseX < paletteImg.width && mouseY > img.height) { 
-    int x = mouseX;
-    int y = mouseY - img.height;
-    paletteImg.loadPixels();
-    int index = y * paletteImg.width + x;
-    color colourToAdd = paletteImg.pixels[index];
-    // Check the colour isn't reserved or already in the palette
-    if (colourToAdd != black && colourToAdd != white && !palette.contains(Integer.valueOf(colourToAdd))) {
-      palette.add(colourToAdd);
-    }
-    paletteImg.updatePixels();
-    resultImg = colourImage(img);
-    paintByNumberImg = pbnImage(resultImg);
-  }
-  // Remove paints with right click
-  // If the mouse is on the palette image, palette area or on the result image
-  if (mouseButton == RIGHT && (mouseY > img.height 
-  || mouseX > img.width && mouseX < img.width + resultImg.width && mouseY < resultImg.height)) { 
-    loadPixels();
-    int index = mouseY * width + mouseX;
-    color colorToRemove = pixels[index];
-    palette.remove(Integer.valueOf(colorToRemove)); // Does nothing if colour is not in the palette
-    updatePixels();
-    resultImg = colourImage(img);
-    paintByNumberImg = pbnImage(resultImg);
-  }
-  
-}
-
-void keyPressed() {
-  // smooths the image with space
-  if (key == ' ') {
-    resultImg = smoothImage(resultImg, 0, 0, resultImg.width, resultImg.height);
-    paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'm'){
-    magnify = !magnify;
-  } else if (key == 's'){
-    saveImages();
-    println("saved");
-  } else if (key == 'r'){
-    resultImg = colourImage(img);
-    paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'l'){
-    labelling = !labelling;
-    // Don't recalculate resultImg as that will ignore smoothing
-    paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'b'){
-    blackAndWhiteMode = !blackAndWhiteMode;
-    // Don't recalculate resultImg as that will ignore smoothing
-    paintByNumberImg = pbnImage(resultImg);
-  } else if (key == CODED) {
-    if (keyCode == UP) {
-      blurKernelSize += 2;
-    }
-    if (keyCode == DOWN) {
-      blurKernelSize -= 2;
-    }
-    if (blurKernelSize < 3) blurKernelSize = 3;
-    if (blurKernelSize >= min(resultImg.width, resultImg.height)) blurKernelSize = min(resultImg.width, resultImg.height);
-  }
-}
-
-// Store start pos
-void mousePressed() {
-  if (mouseButton == LEFT) {
-    dragging = false;
-    startX = mouseX;
-    startY = mouseY;
-  }
-  
-}
-// Draw current rectangle
-void mouseDragged() {
-  if (mouseButton == LEFT) {
-    dragging = true;
-    endX = mouseX;
-    endY = mouseY;
-  }
-  
-}
-// If dragged, blur selected rectangle
-void mouseReleased() {
-  if (dragging) {
-    dragging = false;
-    // Coords of rectangle
-    int leftX = min(startX, endX);
-    int topY = min(startY, endY);
-    int rightX = max(startX, endX);
-    int bottomY = max(startY, endY);
-    
-    // Coords of resultImgn with some padding to avoid out of range errors for sure
-    int resultImgLeftX = img.width + 1;
-    int resultImgTopY = 0;
-    int resultImgRightX = img.width + resultImg.width - 1;
-    int resultImgBottomY = img.height - 1;
-
-    // If none of the rectangle is on the resultImg, break
-    if (leftX >= resultImgRightX || topY >= resultImgBottomY || rightX <= resultImgLeftX || bottomY <= resultImgTopY) return;
-    
-    // Bound the rectangle to inside resultImg
-    leftX = max(leftX, resultImgLeftX);
-    topY = max(topY, resultImgTopY);
-    rightX = min(rightX, resultImgRightX);
-    bottomY = min(bottomY, resultImgBottomY);
-
-    // If the width or height of this bounded rectangle are too small for the blur kernel size, break
-    if (rightX - leftX <= blurKernelSize || bottomY - topY <= blurKernelSize) return;
-    resultImg = smoothImage(resultImg, leftX, topY, rightX, bottomY);
-    paintByNumberImg = pbnImage(resultImg);
-  }
-  
-}
-
+  running = true;
+} //<>//
 
 void draw() {
-  if (!ready) return;
+  if (!running) return; // so it draws nothing until an image is selected
   background(255);
   //image(blurImage(img, 0, 0, img.width, img.height), 0, 0);
   image(img, 0, 0);
@@ -317,72 +152,4 @@ void draw() {
   if (magnify) {
     magnify();
   }
-  
-}
-class ColourCountComparator implements Comparator<Integer[]> {
-    public int compare(Integer[] c1, Integer[] c2) {
-        return -1 * Integer.compare(c1[1], c2[1]); // Times -1 to sort in reverse order, sorting on the counts which is [1]
-    }
-}
-// Sort the palette and paint count by paint count ascending
-void sortPalette() {
-  paletteWithCounts = new ArrayList<Integer[]>();
-  for (int i = 0; i < palette.size(); i++) {
-    Integer[] colourWithCount = new Integer[2];
-    colourWithCount[0] = palette.get(i);
-    colourWithCount[1] = paintCounts.get(i);
-    paletteWithCounts.add(colourWithCount);
-  }
-  Collections.sort(paletteWithCounts, new ColourCountComparator());
-  for (int i = 0; i < paletteWithCounts.size(); i++) {
-    Integer[] colourWithCount = paletteWithCounts.get(i);
-    palette.set(i, colourWithCount[0]);
-    paintCounts.set(i, colourWithCount[1]);
-  }
-  
-}
-void drawPalette() {
-  stroke(1);
-  // Draw current palette
-  int row = 0;
-  int column = 0;
-  for (int i = 0; i < palette.size(); i++) {
-    color paint = palette.get(i);
-    fill(paint);
-    int spacing = paletteRectSpacing;
-    int rectWidth = paletteRectWidth;
-    int x = paletteImg.width + spacing * (column + 1) + rectWidth * column;
-    // If offscreen, start a new row
-    if (x + rectWidth + spacing > width) {
-      row++;
-      column = 0;
-      // Recalculate for new row
-      x = paletteImg.width + spacing * (column + 1) + rectWidth * column;
-    }
-    int y = img.height + spacing * (row + 1) + rectWidth * row;
-    rect(x, y, rectWidth, rectWidth, paletteRectRadius);
-    
-    // Update bounds if necessary for save
-    paletteLeftX = min(paletteLeftX, x);
-    paletteRightX = max(paletteRightX, x + rectWidth); // Add rectWidth to find right side, as x is the left corner
-    paletteTopY = min(paletteTopY, y);
-    paletteBottomY = max(paletteBottomY, y + rectWidth); // Add rectWidth to find bottom side, as y is the top corner
-    
-    // Draw the number of the paint
-    textAlign(CENTER, CENTER);
-    fill((brightness(paint) > 240) ? 0 : 255); // Set text color to black if paint is light, white if paint is dark. 240 is threshold found by trial and error
-    textSize(rectWidth / 2); // Adjust text size to fit inside the rectangle
-    text(i + 1, x + rectWidth / 2, y + rectWidth / 2); // Draw index in the middle
-    
-    // Draw the percentage of the painting it makes up
-    fill(0);
-    textSize(rectWidth / 4);
-    float percentage = (paintCounts.get(i)  * 100f) / (resultImg.width * resultImg.height);
-    // Round percentage to nearest decimal point
-    String roundedPercentage = String.format("%.1f", percentage);
-    text(roundedPercentage + "%", x + rectWidth / 2, y + rectWidth + spacing / 4);
-    
-    column++;
-  }
-  noStroke();
 }
