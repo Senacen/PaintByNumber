@@ -1,6 +1,6 @@
 void saveImages() {
    println("saving");
-   String folderName = "saves/" + getTimeStamp();
+   String folderName = "Saves/" + getTimeStamp();
    createFolder(folderName);
    loadPixels();
    PImage saveFilledImg = get(img.width, 0, resultImg.width, resultImg.height);
@@ -30,4 +30,26 @@ String getTimeStamp() {
   Calendar cal = Calendar.getInstance();
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss"); // Cannot include colons by windows
   return sdf.format(cal.getTime());
+}
+
+void saveCopyToImagesFolder(String path) {
+  // Create a File object for the image to copy
+  File imageToCopy = new File(path);
+  
+  // Extract the file name from the path
+  String fileName = imageToCopy.getName();
+  
+  // Create a File object for the destination in the "Images" folder
+  File destinationFile = new File(sketchPath("Images") + "/" + fileName);
+  
+  if (!destinationFile.exists()) {
+    try {
+      // Copy the file to the "Images" folder
+      Files.copy(imageToCopy.toPath(), destinationFile.toPath());
+      println("Image copied to Images folder: " + destinationFile.getAbsolutePath());
+    } catch (Exception e) {
+      println("Failed to copy the image to Images folder: " + e.getMessage());
+    }
+  }
+  
 }

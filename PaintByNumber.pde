@@ -5,6 +5,9 @@ import java.util.Queue;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 
 // Images
 PImage img;
@@ -61,6 +64,7 @@ int paletteBottomY;
 void setup() {
   size(0,0);
   surface.setLocation(0, 0);
+  createFolder("Images"); // Create Images folder if it doesn't already exist
   initialiseImages();
 }
 
@@ -87,11 +91,14 @@ void paletteImgSelected(File selection) {
   } else {
     // Both input and palette images have been succesfully selected, so create them.
     running = false; // Now pause running the draw function, to prevent race conditions such as resetting palette while trying to use it in draw
+    saveCopyToImagesFolder(imgPath); // Copy the image to the images folder if it isn't already there
+    paletteImgPath = selection.getAbsolutePath();
+    saveCopyToImagesFolder(paletteImgPath); // Copy the image to the images folder if it isn't already there
+    
     img = loadImage(imgPath);
     img.resize(imgResizeWidth, 0);
     resultImg = img.copy();
     paintByNumberImg = createImage(img.width, img.height, RGB);
-    paletteImgPath = selection.getAbsolutePath();
     paletteImg = loadImage(paletteImgPath);
     paletteImg.resize(paletteImgResizeWidth, paletteImgResizeHeight);
     
@@ -105,7 +112,7 @@ void initialiseVariables() {
   palette = new ArrayList<Integer> ();
   resultImg = colourImage(img);
   paintByNumberImg = pbnImage(resultImg);
-  running = true;
+  running = true; // Start drawing or resume drawing
 } //<>//
 
 void draw() {
