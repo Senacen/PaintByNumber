@@ -86,6 +86,7 @@ void paletteImgSelected(File selection) {
     // If it has been running, cancelling just returns the user back to their original images
   } else {
     // Both input and palette images have been succesfully selected, so create them.
+    running = false; // Now pause running the draw function, to prevent race conditions such as resetting palette while trying to use it in draw
     img = loadImage(imgPath);
     img.resize(imgResizeWidth, 0);
     resultImg = img.copy();
