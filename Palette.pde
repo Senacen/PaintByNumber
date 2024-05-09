@@ -49,7 +49,7 @@ void drawPalette() {
     
     // Draw the number of the paint
     textAlign(CENTER, CENTER);
-    fill((brightness(paint) > 240) ? 0 : 255); // Set text color to black if paint is light, white if paint is dark. 240 is threshold found by trial and error
+    fill((brightness(paint) > 230) ? 0 : 255); // Set text color to black if paint is light, white if paint is dark. 230 is threshold found by trial and error
     textSize(rectWidth / 2); // Adjust text size to fit inside the rectangle
     text(i + 1, x + rectWidth / 2, y + rectWidth / 2); // Draw index in the middle
     

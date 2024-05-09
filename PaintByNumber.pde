@@ -68,8 +68,6 @@ void setup() {
   size(0,0);
   surface.setLocation(0, 0);
   createFolder("Images"); // Create Images folder if it doesn't already exist
-  
-  initialiseGUI();
   initialiseImages();
 }
 
@@ -137,9 +135,9 @@ void draw() {
   drawPalette();
   surface.setTitle("Paint By Number - " + "Blur Kernel Size: " + blurKernelSize + " - Frame Rate: " + round(frameRate));
   
-   textAlign(CENTER, CENTER);
-   fill(0);
-   
+  textAlign(CENTER, CENTER);
+  fill(0);
+  
   // Draw labels
   if (labelling) {
     for (int[] label : labels) {
@@ -150,7 +148,7 @@ void draw() {
       text(label[3] + 1, img.width + resultImg.width + label[0], label[1]);
     }
   }
-  
+ 
   // Draw selection rectangle
   if (dragging) {
     fill(255, 255, 255, 50);
