@@ -7,7 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import controlP5.*;
 
+// GUI
+ControlP5 control;
 
 // Images
 PImage img;
@@ -65,8 +68,11 @@ void setup() {
   size(0,0);
   surface.setLocation(0, 0);
   createFolder("Images"); // Create Images folder if it doesn't already exist
+  
+  initialiseGUI();
   initialiseImages();
 }
+
 
 void initialiseImages() {
   selectInput("Select the input image you wish to turn into a Paint by Number: ", "inputImgSelected"); 
