@@ -31,27 +31,27 @@ void mouseClicked() {
 }
 
 void keyPressed() {
-  // smooths the image with space
+  // Smooths the image with space
   if (key == ' ') {
     resultImg = smoothImage(resultImg, 0, 0, resultImg.width, resultImg.height);
     paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'm'){
+  } else if (key == 'm' || key == 'M'){
     magnify = !magnify;
-  } else if (key == 's'){
+  } else if (key == 's' || key == 'S'){
     saveImages();
     println("saved");
-  } else if (key == 'r'){
+  } else if (key == 'r' || key == 'R'){
     resultImg = colourImage(img);
     paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'l'){
+  } else if (key == 'l' || key == 'L'){
     labelling = !labelling;
     // Don't recalculate resultImg as that will ignore smoothing
     paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'b'){
+  } else if (key == 'b' || key == 'B'){
     blackAndWhiteMode = !blackAndWhiteMode;
     // Don't recalculate resultImg as that will ignore smoothing
     paintByNumberImg = pbnImage(resultImg);
-  } else if (key == 'n'){
+  } else if (key == 'n' || key == 'N'){
     initialiseImages(); // Restart
   } else if (key == CODED) {
     if (keyCode == UP) {
@@ -64,6 +64,7 @@ void keyPressed() {
     if (blurKernelSize >= min(resultImg.width, resultImg.height)) blurKernelSize = min(resultImg.width, resultImg.height);
   }
 }
+
 
 // Store start pos
 void mousePressed() {

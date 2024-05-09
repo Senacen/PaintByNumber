@@ -1,4 +1,3 @@
-
 PImage pbnImage(PImage inputImg) {
   sortPalette(); // This is always called when the colours have changed, either from smooth or colour image
   //println("reached pbni");
