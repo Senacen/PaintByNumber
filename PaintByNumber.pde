@@ -7,10 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import controlP5.*;
-
-// GUI
-ControlP5 control;
 
 // Images
 PImage img;
