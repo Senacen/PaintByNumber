@@ -25,7 +25,7 @@ to more accurately calculate the [colour difference](https://en.wikipedia.org/wi
 **M** to magnify  
 **R** to revert smoothing changes  
 **B** to toggle black and white mode  
-**N** to choose new images
+**N** to choose new images  
 **Up Arrow** to increase the blur strength (blur kernel size) for smoothing  
 **Down Arrow** to decrease the blur strength (blur kernel size) for smoothing  
 
