@@ -1,4 +1,5 @@
 # Paint By Number Generator
+** Examples at end **
 Generates a Paint By Number from an input image and a palette image. Allows control over smoothing and paint picking.
 ## Notes
 * Starts by asking for input image and a palette image. Cancelling when first selecting images closes the application.
